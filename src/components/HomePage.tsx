@@ -1,10 +1,35 @@
 import { Col, Container, Button, Card, Row, Badge, Form } from "react-bootstrap";
 import PageLayout from "./PageLayout";
-import { useProducts, useProductsByCategory } from "../queries/Products";
+import { useProducts, useProductsByCategory, Product } from "../queries/Products";
 import useCategories from "../queries/Categories";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { addProduct } from "../redux/cartSlice";
+
+const getCartFromSessionStorage = () => {
+    const cartFromSessionStorage = sessionStorage.getItem("cart");
+    return cartFromSessionStorage ? JSON.parse(cartFromSessionStorage) : [];
+};
+
+const setCartToSessionStorage = (cart: any[]) => {
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+};
+
 
 const HomePage: React.FC = () => {
+    const [cart, setCart] = useState<Product[]>([]);
+    
+    const handleAddProduct = (product: Product, cart: Product[], setCart: React.Dispatch<React.SetStateAction<any[]>>) => {
+        const updatedCart = [...cart, product];
+        setCart(updatedCart);
+        setCartToSessionStorage(updatedCart);
+        addProduct(product);
+    };
+
+    useEffect(() => {
+        const storedCart = getCartFromSessionStorage();
+        setCart(storedCart);
+    }, []);
+
     const { data: categories } = useCategories();
     const [selectedCategory, setSelectedCategory] = useState<string>("");
     
@@ -12,10 +37,6 @@ const HomePage: React.FC = () => {
     const { data: filteredProducts, isLoading: isFiltering } = useProductsByCategory(selectedCategory);
 
     const displayProducts = selectedCategory ? filteredProducts : products;
-
-    const addProduct = (productId: number) => {
-        // Add product to cart logic
-    };
 
     const handleFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedCategory(e.target.value);
@@ -55,7 +76,7 @@ const HomePage: React.FC = () => {
                                         <Card.Text className="mb-2">{product.rating.rate}⭐ ({product.rating.count} Reviews)</Card.Text>
                                         <Card.Title className="mb-3"><Badge bg="warning">${product.price}</Badge></Card.Title>
                                         <Card.Text className="">{product.description}</Card.Text>
-                                        <Button variant="warning" onClick={() => addProduct(product.id)} className="mt-auto">Add to cart</Button>
+                                        <Button variant="warning" onClick={() => handleAddProduct(product, cart, setCart)} className="mt-auto">Add to cart</Button>
                                     </Card.Body>
                                 </Card>
                             </Col>

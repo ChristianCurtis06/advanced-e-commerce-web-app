@@ -21,8 +21,14 @@ const cartSlice = createSlice({
         addProduct: (state, action: PayloadAction<Product>) => {
             state.cart.push(action.payload);
         },
-        removeProduct: (state) => {
+        removeProduct: (state, action: PayloadAction<number>) => {
             state.cart = state.cart.filter(product => product.id !== action.payload);
+        },
+        updateProduct: (state, action: PayloadAction<Product>) => {
+            const index = state.cart.findIndex(product => product.id === action.payload.id);
+            if (index !== -1) {
+                state.cart[index] = action.payload;
+            }
         },
     },
     extraReducers: (builder) => {
@@ -33,7 +39,7 @@ const cartSlice = createSlice({
             })
             .addCase(fetchCounter.fulfilled, (state, action) => {
                 state.loading = false;
-                state.count = action.payload;
+                state.cart = action.payload;
             })
             .addCase(fetchCounter.rejected, (state, action) => {
                 state.loading = false;
@@ -42,5 +48,5 @@ const cartSlice = createSlice({
     },
 });
 
-export const { increment, decrement, incrementByAmount } = cartSlice.actions;
+export const { addProduct, removeProduct, updateProduct } = cartSlice.actions;
 export default cartSlice.reducer;
