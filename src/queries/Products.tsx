@@ -9,6 +9,7 @@ export type Product = {
     description: string;
     rating: { rate: number, count: number };
     image: string;
+    quantity?: number;
 };
 
 const fetchProducts = async (): Promise<Product[]> => {

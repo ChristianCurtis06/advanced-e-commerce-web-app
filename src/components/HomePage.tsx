@@ -2,37 +2,21 @@ import { Col, Container, Button, Card, Row, Badge, Form } from "react-bootstrap"
 import PageLayout from "./PageLayout";
 import { useProducts, useProductsByCategory, Product } from "../queries/Products";
 import useCategories from "../queries/Categories";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useDispatch } from 'react-redux';
 import { addProduct } from "../redux/cartSlice";
 
-const getCartFromSessionStorage = () => {
-    const cartFromSessionStorage = sessionStorage.getItem("cart");
-    return cartFromSessionStorage ? JSON.parse(cartFromSessionStorage) : [];
-};
-
-const setCartToSessionStorage = (cart: any[]) => {
-    sessionStorage.setItem("cart", JSON.stringify(cart));
-};
-
-
 const HomePage: React.FC = () => {
-    const [cart, setCart] = useState<Product[]>([]);
-    
-    const handleAddProduct = (product: Product, cart: Product[], setCart: React.Dispatch<React.SetStateAction<any[]>>) => {
-        const updatedCart = [...cart, product];
-        setCart(updatedCart);
-        setCartToSessionStorage(updatedCart);
-        addProduct(product);
-    };
+    const dispatch = useDispatch();
 
-    useEffect(() => {
-        const storedCart = getCartFromSessionStorage();
-        setCart(storedCart);
-    }, []);
+    const handleAddProduct = (productToAdd: Product) => {
+        dispatch(addProduct(productToAdd));
+        alert(`${productToAdd.title} added to cart!`);
+    };
 
     const { data: categories } = useCategories();
     const [selectedCategory, setSelectedCategory] = useState<string>("");
-    
+
     const { data: products, isLoading, error } = useProducts();
     const { data: filteredProducts, isLoading: isFiltering } = useProductsByCategory(selectedCategory);
 
@@ -62,7 +46,7 @@ const HomePage: React.FC = () => {
                         ))}
                     </Form.Select>
 
-                    {isLoading || isFiltering && <p>Loading products...</p>}
+                    {(isLoading || isFiltering) && <p>Loading products...</p>}
                     {error && <p>Error occurred while fetching products</p>}
 
                     <Row>
@@ -74,9 +58,9 @@ const HomePage: React.FC = () => {
                                         <Card.Text className="mb-2 text-secondary" style={{ textTransform: "capitalize" }}>{product.category}</Card.Text>
                                         <Card.Title className="mb-2">{product.title}</Card.Title>
                                         <Card.Text className="mb-2">{product.rating.rate}⭐ ({product.rating.count} Reviews)</Card.Text>
-                                        <Card.Title className="mb-3"><Badge bg="warning">${product.price}</Badge></Card.Title>
+                                        <Card.Title className="mb-3"><Badge bg="warning">${parseFloat(product.price).toFixed(2)}</Badge></Card.Title>
                                         <Card.Text className="">{product.description}</Card.Text>
-                                        <Button variant="warning" onClick={() => handleAddProduct(product, cart, setCart)} className="mt-auto">Add to cart</Button>
+                                        <Button variant="warning" onClick={() => handleAddProduct(product)} className="mt-auto">Add to cart</Button>
                                     </Card.Body>
                                 </Card>
                             </Col>
