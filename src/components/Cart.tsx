@@ -89,7 +89,7 @@ const Cart: React.FC = () => {
                             </Row>
                         </Card>
                     ))}
-                    <p className="display-6 text-black">Total: ${calculateTotal()}</p>
+                    {cart.length > 0 && <p className="display-6 text-black">Total: ${calculateTotal()}</p>}
                     {cart.length > 0 &&
                         <Button variant="warning" onClick={handleCheckout} className="h-100 w-100 mt-2">Checkout</Button>
                     }

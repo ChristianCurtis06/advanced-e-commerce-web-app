@@ -51,7 +51,7 @@ const HomePage: React.FC = () => {
 
                     <Row>
                         {displayProducts?.map(product => (
-                            <Col md={4} key={product.id} className="mb-4">
+                            <Col sm={6} lg={4} key={product.id} className="mb-4">
                                 <Card className="h-100">
                                     <Card.Img style={{ objectFit: "contain", maxHeight: "250px" }} className="mt-3 h-25" variant="top" src={product.image} />
                                     <Card.Body className="d-flex flex-column">
