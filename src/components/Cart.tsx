@@ -53,7 +53,7 @@ const Cart: React.FC = () => {
 
             <Container>
                 <div className="my-3 bg-light rounded p-5 text-white">
-                    {(cart.length > 1 || cart.length === 0) ? <p className="text-black">{productCount} Products in Cart</p> : <p className="text-black">{productCount} Product in Cart</p>}
+                    {(productCount > 1 || productCount === 0) ? <p className="text-black">{productCount} Products in Cart</p> : <p className="text-black">{productCount} Product in Cart</p>}
                     {cart.map((product, index) => (
                         <Card key={index} className="mb-4">
                             <Row>
@@ -63,7 +63,7 @@ const Cart: React.FC = () => {
                                 <Col md={10}>
                                     <Card.Body className="d-flex flex-column h-100">
                                         <div className="d-flex flex-row">
-                                            <Card.Title className="mb-2 fs-2">{product.title}</Card.Title>
+                                            <Card.Title className="mb-2 fs-4">{product.title}</Card.Title>
                                             <Card.Title className="mb-3 ms-3 fs-2"><Badge bg="warning">${parseFloat(product.price).toFixed(2)}</Badge></Card.Title>
                                         </div>
                                         <Row className="">
@@ -89,7 +89,7 @@ const Cart: React.FC = () => {
                             </Row>
                         </Card>
                     ))}
-                    {cart.length > 0 && <p className="display-6 text-black">Total: ${calculateTotal()}</p>}
+                    {cart.length > 0 && <p className="display-6 text-black">Total: <strong>${calculateTotal()}</strong></p>}
                     {cart.length > 0 &&
                         <Button variant="warning" onClick={handleCheckout} className="h-100 w-100 mt-2">Checkout</Button>
                     }
