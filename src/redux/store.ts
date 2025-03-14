@@ -3,7 +3,7 @@ import cartReducer from './cartSlice';
 
 const saveState = (state: RootState) => {
     try {
-        const serializedState = JSON.stringify(state.cart); // Persist only the cart state
+        const serializedState = JSON.stringify(state.cart);
         sessionStorage.setItem('cartState', serializedState);
     } catch (e) {
         console.error("Could not save state", e);

@@ -18,7 +18,7 @@ const Cart: React.FC = () => {
         for (let product of cart) {
             total += parseFloat(product.price) * product.quantity!;
         }
-        return parseFloat(total.toFixed(2));
+        return total.toFixed(2);
     };
 
     const handleRemoveProduct = (productId: number) => {
@@ -26,6 +26,9 @@ const Cart: React.FC = () => {
     };
 
     const handleQuantityChange = (product: Product, quantity: number) => {
+        if (isNaN(quantity) || quantity < 1) {
+            quantity = 1;
+        }
         dispatch(updateProduct({ ...product, quantity: quantity }));
     };
 
